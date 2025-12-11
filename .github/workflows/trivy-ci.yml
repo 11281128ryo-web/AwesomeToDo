@@ -1,0 +1,29 @@
+name: Trivy CI
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  security_scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        
+      - name: Run Trivy scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          # ??????????????????????????????????
+          scan-type: 'fs'
+          # ???????????????????????
+          severity: 'HIGH,CRITICAL'
+          # ??? trivy-report.txt ???
+          output: 'trivy-report.txt'
+          
+      - name: Upload Trivy report
+        uses: actions/upload-artifact@v4
+        with:
+          name: trivy-scan-report
+          path: trivy-report.txt
